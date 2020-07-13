@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import 'package:clima/services/location.dart';
+import 'package:http/http.dart' as http;
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -23,8 +24,21 @@ class _LoadingScreenState extends State<LoadingScreen> {
     print('initSatate Called');
   }
 
+  void getData() async {
+    // "http" package라는걸 명시하기 위해서. 상단에도 바꿔줬음.
+    http.Response response = await http.get('https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=439d4b804bc8187953eb36d2a8c26a02');
+
+    if (response.statusCode == 200) {
+      String data = response.body;
+      print(data);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getData();
     return Scaffold();
     // String myMargin = 'abc';
     // double myMarginAsADouble;
