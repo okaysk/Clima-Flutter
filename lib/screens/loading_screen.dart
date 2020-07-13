@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:clima/services/location.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -30,7 +31,21 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
     if (response.statusCode == 200) {
       String data = response.body;
-      print(data);
+      // print(data);
+
+      var decodedData = jsonDecode(data);
+
+      var longitude = jsonDecode(data)['coord']['lon'];
+      print(longitude);
+
+      var weatherDesc = decodedData['weather'][0]['description'];
+      print(weatherDesc);
+
+      var weatherId = decodedData['weather'][0]['id'];
+      print(weatherId);
+
+      String cityName = jsonDecode(data)['name'];
+      print(cityName);
     } else {
       print(response.statusCode);
     }
