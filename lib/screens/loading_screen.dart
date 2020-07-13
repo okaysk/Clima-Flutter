@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:clima/services/location.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:clima/services/networking.dart';
+import 'location_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+const apiKey = '231bc96334d3e4fd2756459ecb38dccd';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -10,65 +15,39 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  double latitude;
+  double longitude;
+
   @override
   void initState() {
     super.initState();
-    getLocation();
+    getLocationData();
   }
 
-  void getLocation() async {
+  void getLocationData() async {
     Location location = Location();
     await location.getCurrentLocation();
-    print('longitude : ${location.longitude}');
-    print('latitude : ${location.latitude}');
+    latitude = location.latitude;
+    longitude = location.longitude;
 
-    print('initSatate Called');
-  }
+    NetworkHelper networkHelper = NetworkHelper('https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
 
-  void getData() async {
-    // "http" package라는걸 명시하기 위해서. 상단에도 바꿔줬음.
-    http.Response response = await http.get('https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=439d4b804bc8187953eb36d2a8c26a02');
+    var weatherData = await networkHelper.getData();
 
-    if (response.statusCode == 200) {
-      String data = response.body;
-      // print(data);
-
-      var decodedData = jsonDecode(data);
-
-      var longitude = jsonDecode(data)['coord']['lon'];
-      print(longitude);
-
-      var weatherDesc = decodedData['weather'][0]['description'];
-      print(weatherDesc);
-
-      var weatherId = decodedData['weather'][0]['id'];
-      print(weatherId);
-
-      String cityName = jsonDecode(data)['name'];
-      print(cityName);
-    } else {
-      print(response.statusCode);
-    }
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return LocationScreen();
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
-    getData();
-    return Scaffold();
-    // String myMargin = 'abc';
-    // double myMarginAsADouble;
-    // try {
-    //   myMarginAsADouble = double.parse(myMargin);
-    // } catch (e) {
-    //   print(e);
-    //   // myMarginAsADouble = 30.0;
-    // }
-
-    // return Scaffold(
-    //   body: Container(
-    //     margin: EdgeInsets.all(myMarginAsADouble ?? 100.0), // Null Aware Operator.  myMargin---이 null이면 ?? 뒤로 대체.
-    //     color: Colors.red,
-    //   ),
-    // );
+    return Scaffold(
+      body: Center(
+        child: SpinKitDoubleBounce(
+          color: Colors.white,
+          size: 100.0,
+        ),
+      ),
+    );
   }
 }
