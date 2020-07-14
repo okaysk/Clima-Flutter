@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:clima/services/weather.dart';
 
 class LoadingScreen extends StatefulWidget {
-  // Loading Screen ???????
+  // Loading Screen 뭐 적다 말았나??????
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
 }
